@@ -29,9 +29,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex-shrink-0 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-amber-700 rounded flex items-center justify-center text-stone-50 font-heading font-bold text-2xl shadow-sm">
-                        {{ substr(config('app.name', 'A'), 0, 1) }}
-                    </div>
+                    <img src="{{ asset('images/logo.png') }}" alt="Artisan Platform Logo" class="h-10 w-auto rounded shadow-sm">
                     <span class="font-heading font-bold text-2xl tracking-tight text-stone-900">{{ config('app.name', 'ArtisanPlatform') }}</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">

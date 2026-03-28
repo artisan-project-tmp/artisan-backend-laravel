@@ -23,8 +23,8 @@
     <div class="w-full max-w-md bg-white border border-stone-200 shadow-sm relative z-10 p-8 sm:p-10">
         
         <div class="text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-flex items-center justify-center w-12 h-12 rounded bg-amber-700 text-amber-50 font-heading font-bold text-2xl mb-4 hover:bg-stone-900 transition-colors">
-                {{ substr(config('app.name', 'A'), 0, 1) }}
+            <a href="{{ route('home') }}" class="inline-block mb-4 hover:opacity-90 transition-opacity">
+                <img src="{{ asset('images/logo.png') }}" alt="Artisan Platform Logo" class="h-16 w-auto mx-auto rounded-lg shadow-sm">
             </a>
             <h2 class="font-heading text-3xl font-bold text-stone-900">Welcome back</h2>
             <div class="w-12 h-1 bg-amber-700 mx-auto mt-4 mb-2"></div>
