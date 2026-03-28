@@ -47,10 +47,10 @@
                     <span class="font-heading text-2xl font-bold tracking-tight text-amber-700 dark:text-amber-500 dark:glow-amber-text">Artisan <span class="text-stone-700 dark:text-stone-300 italic font-light">Studio</span></span>
                 </a>
                 <div class="flex items-center space-x-6">
-                    <!-- Settings Toggle -->
-                    <button id="settings-toggle" type="button" class="text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none transition-colors">
+                    <!-- Settings Link -->
+                    <a href="{{ route('artisan.settings') }}" class="text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    </button>
+                    </a>
                     <!-- Theme Toggle -->
                     <button id="theme-toggle" type="button" class="text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none transition-colors">
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
@@ -236,41 +236,6 @@
         </div>
 
     </main>
-
-    <!-- Profile Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" id="settings-backdrop"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
-            <div class="glass-card rounded-xl p-8 shadow-2xl mx-4">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-stone-100">Profile Settings</h3>
-                    <button id="close-settings" class="text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-                
-                <form action="{{ route('artisan.profile.update') }}" method="POST">
-                    @csrf
-                    
-                    <div class="mb-5">
-                        <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Craft Category</label>
-                        <select name="craft_type" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors">
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->name }}" {{ $user->artisan->craft_type == $cat->name ? 'selected' : '' }}>{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Professional Bio</label>
-                        <textarea name="bio" rows="6" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors" placeholder="Tell clients about your expertise...">{{ $user->artisan->bio }}</textarea>
-                    </div>
-
-                    <button type="submit" class="w-full bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest py-3 rounded transition-colors shadow-sm">Save Changes</button>
-                </form>
-            </div>
-        </div>
-    </div>
     
     <script>
         // Setup Icon Display
@@ -297,12 +262,6 @@
                 localStorage.setItem('theme', 'dark');
             }
         });
-
-        // Settings Modal Logic
-        const settingsModal = document.getElementById('settings-modal');
-        document.getElementById('settings-toggle').addEventListener('click', () => settingsModal.classList.remove('hidden'));
-        document.getElementById('close-settings').addEventListener('click', () => settingsModal.classList.add('hidden'));
-        document.getElementById('settings-backdrop').addEventListener('click', () => settingsModal.classList.add('hidden'));
     </script>
 </body>
 </html>

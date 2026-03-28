@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Artisan;
 use App\Models\PortfolioImage;
+use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class ArtisanController extends Controller
 {
+    public function settings()
+    {
+        $user = Auth::user();
+        $categories = Category::all();
+        return view('artisan.settings', compact('user', 'categories'));
+    }
+
     public function updateProfile(Request $request)
     {
         $request->validate([
