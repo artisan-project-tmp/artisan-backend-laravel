@@ -10,12 +10,12 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Pottery & Ceramics', 'slug' => 'pottery-ceramics', 'description' => 'Clay work, terracotta, and custom dishware.'],
-            ['name' => 'Woodcraft & Carpentry', 'slug' => 'woodcraft-carpentry', 'description' => 'Hand-carved furniture and wooden decor.'],
-            ['name' => 'Textiles & Weaving', 'slug' => 'textiles-weaving', 'description' => 'Handmade rugs, traditional clothing, and embroidery.'],
-            ['name' => 'Metalwork & Jewelry', 'slug' => 'metalwork-jewelry', 'description' => 'Silvercraft, copperware, and handcrafted accessories.'],
-            ['name' => 'Leatherwork', 'slug' => 'leatherwork', 'description' => 'Custom bags, belts, and traditional footwear.'],
-            ['name' => 'Masonry & Tilework', 'slug' => 'masonry-tilework', 'description' => 'Traditional tile setting, plastering, and stone carving.'],
+            ['name' => 'Électricité', 'slug' => 'electricite', 'description' => 'Wiring, lighting, panel repairs.'],
+            ['name' => 'Plomberie', 'slug' => 'plomberie', 'description' => 'Leaks, pipe installations, water heaters.'],
+            ['name' => 'Peinture & Décoration', 'slug' => 'peinture-decoration', 'description' => 'Interior/exterior painting, wallpapering.'],
+            ['name' => 'Menuiserie', 'slug' => 'menuiserie', 'description' => 'Custom furniture, door/window repairs, woodcraft.'],
+            ['name' => 'Maçonnerie & Zellige', 'slug' => 'maconnerie-zellige', 'description' => 'Wall repairs, traditional Moroccan tiling, floor work.'],
+            ['name' => 'Bricolage', 'slug' => 'bricolage', 'description' => 'Small fixes, TV mounting, furniture assembly.'],
         ];
 
         foreach ($categories as $category) {

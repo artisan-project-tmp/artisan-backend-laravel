@@ -12,14 +12,14 @@ class ArtisanSeeder extends Seeder
 {
     public function run(): void
     {
-        $pottery = Category::where('slug', 'pottery-ceramics')->first();
-        $wood = Category::where('slug', 'woodcraft-carpentry')->first();
+        $maconnerie = Category::where('slug', 'maconnerie-zellige')->first();
+        $menuiserie = Category::where('slug', 'menuiserie')->first();
 
         // Artisan 1
         $user1 = User::firstOrCreate(
             ['email' => 'anya@example.com'],
             [
-                'name' => 'Anya Silva',
+                'name' => 'Anya Silva', // We can keep Anya or change it later
                 'password' => Hash::make('password'),
                 'role' => 'artisan'
             ]
@@ -28,8 +28,8 @@ class ArtisanSeeder extends Seeder
         Artisan::firstOrCreate(
             ['artisan_id' => $user1->id],
             [
-                'craft_type' => $pottery ? $pottery->name : 'Pottery & Ceramics',
-                'bio' => 'Passionate about bringing earth to life through traditional ceramics.',
+                'craft_type' => $maconnerie ? $maconnerie->name : 'Maçonnerie & Zellige',
+                'bio' => 'Passionate about bringing earth and stone to life through traditional Moroccan Zellige and solid masonry.',
             ]
         );
 
@@ -46,8 +46,8 @@ class ArtisanSeeder extends Seeder
         Artisan::firstOrCreate(
             ['artisan_id' => $user2->id],
             [
-                'craft_type' => $wood ? $wood->name : 'Woodcraft',
-                'bio' => 'Third-generation woodworker specializing in reclaimed timber.',
+                'craft_type' => $menuiserie ? $menuiserie->name : 'Menuiserie',
+                'bio' => 'Third-generation Menuisier specializing in custom Moroccan woodwork and furniture repair.',
             ]
         );
     }
