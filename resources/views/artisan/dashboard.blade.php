@@ -99,6 +99,25 @@
                 <h2 class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100">Your Impact Pipeline</h2>
             </div>
             
+            @php $isProfileIncomplete = empty(trim($user->artisan->bio)) || $user->artisan->craft_type === 'Not Specified'; @endphp
+            
+            @if($isProfileIncomplete)
+            <!-- Locked Availability Switch -->
+            <div class="glass-card p-4 flex items-center gap-6 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-900/50 opacity-80 cursor-not-allowed">
+                <div class="text-right">
+                    <div class="text-stone-400 dark:text-stone-500 text-sm font-bold uppercase tracking-widest leading-tight flex items-center justify-end gap-2">
+                        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        Profile Incomplete
+                    </div>
+                    <div class="text-stone-400 text-[10px] uppercase font-bold tracking-widest mt-1">Action Required</div>
+                </div>
+                <!-- Toggle UI (Locked) -->
+                <div class="relative inline-block w-14 mr-2 align-middle select-none transition duration-200 ease-in pointer-events-none opacity-50">
+                    <input type="checkbox" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-stone-200 dark:bg-stone-400 border-4 appearance-none z-10 top-0.5" disabled/>
+                    <label class="toggle-label block overflow-hidden h-7 rounded-full bg-stone-300 dark:bg-stone-700"></label>
+                </div>
+            </div>
+            @else
             <!-- Glowing Availability Switch (Triggers Modal) -->
             <div id="availability-trigger" class="glass-card p-4 flex items-center gap-6 rounded-lg border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors cursor-pointer {{ $user->artisan->is_available ? 'glow-amber border-amber-200 dark:border-amber-900/30 bg-amber-50 dark:bg-amber-900/10' : '' }}">
                 <div class="text-right pointer-events-none">
@@ -111,6 +130,7 @@
                     <label class="toggle-label block overflow-hidden h-7 rounded-full bg-stone-200 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-inner"></label>
                 </div>
             </div>
+            @endif
         </div>
 
         <!-- Impact KPI Cards -->
@@ -261,6 +281,29 @@
             </div>
         </div>
     </div>
+
+    @if($isProfileIncomplete)
+    <!-- Forced Onboarding Wizard -->
+    <div class="fixed inset-0 z-[200] flex items-center justify-center">
+        <!-- Intense Backdrop blur so they can barely see the dashboard -->
+        <div class="absolute inset-0 bg-stone-900/80 backdrop-blur-md"></div>
+        <div class="relative w-full max-w-lg mx-4 z-10 scale-100 transition-transform">
+            <div class="glass-card rounded-2xl p-10 shadow-2xl text-center border-amber-500/30 glow-amber bg-white dark:bg-stone-900">
+                <div class="w-20 h-20 mx-auto bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <svg class="w-10 h-10 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                </div>
+                <h2 class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4 dark:glow-amber-text">Welcome to the Studio</h2>
+                <p class="text-stone-600 dark:text-stone-400 leading-relaxed mb-8">
+                    Your command center is almost ready. Before you can activate your availability and start receiving quoting requests from clients, you must first define your true <strong>Craft Category</strong> and write your <strong>Professional Bio</strong>.
+                </p>
+                <a href="{{ route('artisan.settings') }}" class="inline-block w-full px-8 py-4 bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest rounded transition-colors shadow-md hover:shadow-lg dark:shadow-[0_0_15px_rgba(217,119,6,0.2)] dark:hover:shadow-[0_0_20px_rgba(217,119,6,0.4)] relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white/20 w-0 group-hover:w-full transition-all duration-300"></div>
+                    <span class="relative">Set Up Profile Now</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
     
     <script>
         // Setup Icon Display
@@ -290,9 +333,12 @@
 
         // Availability Modal Logic
         const availabilityModal = document.getElementById('availability-modal');
-        document.getElementById('availability-trigger').addEventListener('click', () => availabilityModal.classList.remove('hidden'));
-        document.getElementById('close-availability').addEventListener('click', () => availabilityModal.classList.add('hidden'));
-        document.getElementById('availability-backdrop').addEventListener('click', () => availabilityModal.classList.add('hidden'));
+        const availabilityTrigger = document.getElementById('availability-trigger');
+        if (availabilityTrigger && availabilityModal) {
+            availabilityTrigger.addEventListener('click', () => availabilityModal.classList.remove('hidden'));
+            document.getElementById('close-availability').addEventListener('click', () => availabilityModal.classList.add('hidden'));
+            document.getElementById('availability-backdrop').addEventListener('click', () => availabilityModal.classList.add('hidden'));
+        }
     </script>
 </body>
 </html>

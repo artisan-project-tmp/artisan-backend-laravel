@@ -21,6 +21,12 @@ class ArtisanController extends Controller
     public function toggleAvailability(Request $request)
     {
         $artisan = Artisan::where('artisan_id', Auth::id())->firstOrFail();
+
+        // Safety Lock: Prevent publishing if profile is incomplete
+        if (empty(trim($artisan->bio)) || $artisan->craft_type === 'Not Specified') {
+            return redirect()->back()->withErrors(['The artisan profile is incomplete. You must set a Category and Bio in your Settings before going online.']);
+        }
+
         $artisan->is_available = !$artisan->is_available;
         $artisan->save();
 
