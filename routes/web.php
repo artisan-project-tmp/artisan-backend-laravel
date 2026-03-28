@@ -20,7 +20,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/artisan/bio', [ArtisanController::class, 'updateBio'])->name('artisan.bio.update');
+    Route::post('/artisan/profile', [ArtisanController::class, 'updateProfile'])->name('artisan.profile.update');
     Route::post('/artisan/portfolio', [ArtisanController::class, 'uploadPortfolioImage'])->name('artisan.portfolio.upload');
     Route::delete('/artisan/portfolio/{id}', [ArtisanController::class, 'deletePortfolioImage'])->name('artisan.portfolio.delete');
 });

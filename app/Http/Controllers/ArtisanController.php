@@ -10,16 +10,20 @@ use Illuminate\Support\Facades\Auth;
 
 class ArtisanController extends Controller
 {
-    public function updateBio(Request $request)
+    public function updateProfile(Request $request)
     {
         $request->validate([
-            'bio' => 'required|string|max:1000',
+            'bio' => 'nullable|string|max:1000',
+            'craft_type' => 'required|string|max:100',
         ]);
 
         $artisan = Artisan::where('artisan_id', Auth::id())->firstOrFail();
-        $artisan->update(['bio' => $request->bio]);
+        $artisan->update([
+            'bio' => $request->bio,
+            'craft_type' => $request->craft_type,
+        ]);
 
-        return redirect()->back()->with('success', 'Bio updated successfully!');
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
     public function uploadPortfolioImage(Request $request)

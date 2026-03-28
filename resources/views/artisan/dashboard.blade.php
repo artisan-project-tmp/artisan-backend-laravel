@@ -47,6 +47,10 @@
                     <span class="font-heading text-2xl font-bold tracking-tight text-amber-700 dark:text-amber-500 dark:glow-amber-text">Artisan <span class="text-stone-700 dark:text-stone-300 italic font-light">Studio</span></span>
                 </a>
                 <div class="flex items-center space-x-6">
+                    <!-- Settings Toggle -->
+                    <button id="settings-toggle" type="button" class="text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
                     <!-- Theme Toggle -->
                     <button id="theme-toggle" type="button" class="text-stone-500 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none transition-colors">
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
@@ -195,56 +199,78 @@
 
         </div>
 
-        <!-- Profile Bio & Portfolio -->
+        <!-- Portfolio Grid Full Width -->
         <h3 class="text-xs font-bold tracking-widest text-stone-500 dark:text-stone-400 uppercase mb-6 mt-16 flex items-center">
-            <span class="w-4 h-[1px] bg-amber-600 mr-3"></span> Your Craft & Identity
+            <span class="w-4 h-[1px] bg-amber-600 mr-3"></span> Your Craft Gallery
         </h3>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Bio Form Column -->
-            <div class="lg:col-span-1 glass-card p-6 rounded-lg self-start">
-                <form action="{{ route('artisan.bio.update') }}" method="POST">
-                    @csrf
-                    <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-3">Professional Bio</label>
-                    <textarea name="bio" rows="8" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors" placeholder="Tell clients about your expertise, experience, and passion for your craft...">{{ $user->artisan->bio }}</textarea>
-                    <button type="submit" class="mt-4 w-full bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest py-3 rounded transition-colors shadow-sm">Save Bio</button>
-                </form>
-            </div>
-
-            <!-- Portfolio Grid Column -->
-            <div class="lg:col-span-2">
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <!-- Existing Images -->
-                    @foreach($user->artisan->portfolioImages as $image)
-                    <div class="relative group aspect-square rounded-lg overflow-hidden border border-stone-200 dark:border-stone-800">
-                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Portfolio piece" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <form action="{{ route('artisan.portfolio.delete', $image->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-white hover:text-red-400 transition-colors p-2" title="Delete image">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </form>
-                        </div>
+        <div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- Existing Images -->
+                @foreach($user->artisan->portfolioImages as $image)
+                <div class="relative group aspect-square rounded-lg overflow-hidden border border-stone-200 dark:border-stone-800">
+                    <img src="{{ asset('storage/' . $image->image_path) }}" alt="Portfolio piece" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <form action="{{ route('artisan.portfolio.delete', $image->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-white hover:text-red-400 transition-colors p-2" title="Delete image">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </form>
                     </div>
-                    @endforeach
-
-                    <!-- Upload Form Zone -->
-                    <form action="{{ route('artisan.portfolio.upload') }}" method="POST" enctype="multipart/form-data" class="aspect-square glass-card rounded-lg flex flex-col items-center justify-center text-center hover:border-amber-500 hover:bg-stone-50 dark:hover:bg-stone-900/50 transition-colors cursor-pointer group border-dashed border-2 relative">
-                        @csrf
-                        <input type="file" name="portfolio_image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.form.submit()">
-                        <div class="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center mb-3 group-hover:bg-amber-100 group-hover:scale-110 transition-all duration-300">
-                            <svg class="w-6 h-6 text-stone-400 group-hover:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
-                        </div>
-                        <h4 class="font-heading text-lg font-bold text-stone-900 dark:text-stone-200">Add Photo</h4>
-                        <p class="text-stone-500 text-[10px] uppercase font-bold tracking-widest mt-1">Max 5MB</p>
-                    </form>
                 </div>
+                @endforeach
+
+                <!-- Upload Form Zone -->
+                <form action="{{ route('artisan.portfolio.upload') }}" method="POST" enctype="multipart/form-data" class="aspect-square glass-card rounded-lg flex flex-col items-center justify-center text-center hover:border-amber-500 hover:bg-stone-50 dark:hover:bg-stone-900/50 transition-colors cursor-pointer group border-dashed border-2 relative">
+                    @csrf
+                    <input type="file" name="portfolio_image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.form.submit()">
+                    <div class="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center mb-3 group-hover:bg-amber-100 group-hover:scale-110 transition-all duration-300">
+                        <svg class="w-6 h-6 text-stone-400 group-hover:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <h4 class="font-heading text-lg font-bold text-stone-900 dark:text-stone-200">Add Photo</h4>
+                    <p class="text-stone-500 text-[10px] uppercase font-bold tracking-widest mt-1">Max 5MB</p>
+                </form>
             </div>
         </div>
 
     </main>
+
+    <!-- Profile Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" id="settings-backdrop"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
+            <div class="glass-card rounded-xl p-8 shadow-2xl mx-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-stone-100">Profile Settings</h3>
+                    <button id="close-settings" class="text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <form action="{{ route('artisan.profile.update') }}" method="POST">
+                    @csrf
+                    
+                    <div class="mb-5">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Craft Category</label>
+                        <select name="craft_type" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors">
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->name }}" {{ $user->artisan->craft_type == $cat->name ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Professional Bio</label>
+                        <textarea name="bio" rows="6" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors" placeholder="Tell clients about your expertise...">{{ $user->artisan->bio }}</textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest py-3 rounded transition-colors shadow-sm">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <script>
         // Setup Icon Display
@@ -271,6 +297,12 @@
                 localStorage.setItem('theme', 'dark');
             }
         });
+
+        // Settings Modal Logic
+        const settingsModal = document.getElementById('settings-modal');
+        document.getElementById('settings-toggle').addEventListener('click', () => settingsModal.classList.remove('hidden'));
+        document.getElementById('close-settings').addEventListener('click', () => settingsModal.classList.add('hidden'));
+        document.getElementById('settings-backdrop').addEventListener('click', () => settingsModal.classList.add('hidden'));
     </script>
 </body>
 </html>

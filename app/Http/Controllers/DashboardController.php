@@ -15,7 +15,8 @@ class DashboardController extends Controller
 
         if ($user->role === 'artisan') {
             $user->load('artisan.portfolioImages');
-            return view('artisan.dashboard', compact('user'));
+            $categories = Category::all();
+            return view('artisan.dashboard', compact('user', 'categories'));
         }
 
         // If client, fetch categories and featured artisans for the discovery feed
