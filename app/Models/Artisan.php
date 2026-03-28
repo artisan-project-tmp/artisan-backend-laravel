@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Artisan extends Model
 {
     protected $primaryKey = 'artisan_id';
+    public $incrementing = false;
 
     protected $fillable = [
         'artisan_id',
         'bio',
         'craft_type',
+        'is_available',
         'cover_image_path',
+    ];
+
+    protected $casts = [
+        'is_available' => 'boolean',
     ];
 
     public function user()

@@ -32,8 +32,10 @@
         .dark .kanban-col { background: rgba(28, 25, 23, 0.4); border: 1px dashed rgba(120, 113, 108, 0.3); }
         
         /* Toggle Switch styling */
-        .toggle-checkbox:checked { right: 0; border-color: #d97706; transform: translateX(11px); }
-        .toggle-checkbox:checked + .toggle-label { background-color: #9a3412; box-shadow: inset 0 0 10px rgba(217,119,6,0.5); }
+        .toggle-checkbox { right: auto; left: 2px; border-color: #a8a29e; }
+        .dark .toggle-checkbox { border-color: #57534e; }
+        .toggle-checkbox:checked { right: 0; left: auto; border-color: #d97706; transform: translateX(0); }
+        .toggle-checkbox:checked + .toggle-label { background-color: #9a3412; box-shadow: inset 0 0 10px rgba(217,119,6,0.5); border-color: #d97706; }
     </style>
 </head>
 <body class="antialiased bg-stone-50 text-stone-900 dark:bg-[#0c0a09] dark:text-[#d6d3d1] selection:bg-amber-700 selection:text-white pb-20 transition-colors duration-300">
@@ -97,16 +99,16 @@
                 <h2 class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100">Your Impact Pipeline</h2>
             </div>
             
-            <!-- Glowing Availability Switch -->
-            <div class="glass-card p-4 flex items-center gap-6 rounded-lg border-amber-200 dark:border-amber-900/30 glow-amber bg-amber-50 dark:bg-amber-900/10">
-                <div class="text-right">
-                    <div class="text-amber-700 dark:text-amber-500 text-sm font-bold uppercase tracking-widest leading-tight">Available For Hire</div>
-                    <div class="text-stone-500 text-xs">Visible in client feed</div>
+            <!-- Glowing Availability Switch (Triggers Modal) -->
+            <div id="availability-trigger" class="glass-card p-4 flex items-center gap-6 rounded-lg border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors cursor-pointer {{ $user->artisan->is_available ? 'glow-amber border-amber-200 dark:border-amber-900/30 bg-amber-50 dark:bg-amber-900/10' : '' }}">
+                <div class="text-right pointer-events-none">
+                    <div class="text-sm font-bold uppercase tracking-widest leading-tight {{ $user->artisan->is_available ? 'text-amber-700 dark:text-amber-500' : 'text-stone-500 dark:text-stone-400' }}">Available For Hire</div>
+                    <div class="text-stone-500 text-xs">{{ $user->artisan->is_available ? 'Visible in client feed' : 'Hidden from clients' }}</div>
                 </div>
-                <!-- Toggle -->
-                <div class="relative inline-block w-14 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-amber-500 border-4 appearance-none cursor-pointer z-10 top-0.5 right-[16px] transition-transform" style="border-color: #7b2c0e;" checked/>
-                    <label for="toggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-amber-200 dark:bg-amber-900/50 cursor-pointer border border-amber-300 dark:border-amber-800/30 dark:shadow-[inset_0_0_10px_rgba(217,119,6,0.3)] shadow-[inset_0_0_5px_rgba(217,119,6,0.1)]"></label>
+                <!-- Toggle UI (Visual Only, input is pointer-events-none) -->
+                <div class="relative inline-block w-14 mr-2 align-middle select-none transition duration-200 ease-in pointer-events-none">
+                    <input type="checkbox" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-300 border-4 appearance-none z-10 top-0.5 transition-transform" {{ $user->artisan->is_available ? 'checked' : '' }}/>
+                    <label class="toggle-label block overflow-hidden h-7 rounded-full bg-stone-200 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-inner"></label>
                 </div>
             </div>
         </div>
@@ -236,6 +238,29 @@
         </div>
 
     </main>
+
+    <!-- Availability Confirmation Modal -->
+    <div id="availability-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" id="availability-backdrop"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
+            <div class="glass-card rounded-xl p-8 shadow-2xl mx-4 text-center">
+                <div class="w-16 h-16 mx-auto bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">Change Availability?</h3>
+                <p class="text-sm text-stone-600 dark:text-stone-400 mb-8">
+                    {{ $user->artisan->is_available ? 'You will be hidden from the Client Discovery Feed and will not receive new requests.' : 'You will become visible on the Client Discovery Feed and can receive new job requests.' }}
+                </p>
+                <form action="{{ route('artisan.availability.toggle') }}" method="POST">
+                    @csrf
+                    <div class="flex gap-4">
+                        <button type="button" id="close-availability" class="flex-1 px-4 py-3 bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold uppercase tracking-widest rounded transition-colors">Cancel</button>
+                        <button type="submit" class="flex-1 px-4 py-3 bg-amber-600 hover:bg-amber-700 text-stone-50 text-xs font-bold uppercase tracking-widest rounded transition-colors shadow-sm">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <script>
         // Setup Icon Display
@@ -262,6 +287,12 @@
                 localStorage.setItem('theme', 'dark');
             }
         });
+
+        // Availability Modal Logic
+        const availabilityModal = document.getElementById('availability-modal');
+        document.getElementById('availability-trigger').addEventListener('click', () => availabilityModal.classList.remove('hidden'));
+        document.getElementById('close-availability').addEventListener('click', () => availabilityModal.classList.add('hidden'));
+        document.getElementById('availability-backdrop').addEventListener('click', () => availabilityModal.classList.add('hidden'));
     </script>
 </body>
 </html>

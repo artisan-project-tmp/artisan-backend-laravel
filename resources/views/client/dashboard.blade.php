@@ -93,7 +93,7 @@
 
         <!-- Rich Artisan Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
-            @foreach($featuredArtisans as $artisanUser)
+            @foreach($artisans as $artisanUser)
             <div class="glass-card rounded-lg p-6 flex flex-col sm:flex-row gap-6 hover:border-amber-700/40 dark:hover:border-amber-600/40 transition-colors shadow-md dark:shadow-lg group">
                 
                 <!-- Left: Profile & Mini Portfolio -->
@@ -151,7 +151,11 @@
                                 <p class="text-amber-700 dark:text-amber-500 text-xs font-bold tracking-widest uppercase mt-1 dark:glow-amber-text">{{ $artisanUser->artisan->craft_type }}</p>
                             </div>
                             <!-- Availability Badge -->
-                            <div class="bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/50 px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded whitespace-nowrap">Available</div>
+                            @if($artisanUser->artisan->is_available)
+                                <div class="bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/50 px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded whitespace-nowrap flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Available</div>
+                            @else
+                                <div class="bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 border border-stone-300 dark:border-stone-700 px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded whitespace-nowrap">Busy / Booked</div>
+                            @endif
                         </div>
                         <p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed mt-4 italic line-clamp-3">
                             "{{ $artisanUser->artisan->bio ?? 'Passionate artisan dedicated to high-quality craftsmanship.' }}"

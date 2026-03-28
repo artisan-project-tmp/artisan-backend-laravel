@@ -18,6 +18,16 @@ class ArtisanController extends Controller
         return view('artisan.settings', compact('user', 'categories'));
     }
 
+    public function toggleAvailability(Request $request)
+    {
+        $artisan = Artisan::where('artisan_id', Auth::id())->firstOrFail();
+        $artisan->is_available = !$artisan->is_available;
+        $artisan->save();
+
+        $status = $artisan->is_available ? 'Available' : 'Busy';
+        return redirect()->back()->with('success', "Status set to $status.");
+    }
+
     public function updateProfile(Request $request)
     {
         $request->validate([
