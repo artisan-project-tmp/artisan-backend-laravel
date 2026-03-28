@@ -74,6 +74,10 @@
     <section id="features" class="py-24 bg-white relative border-b border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
+                <!-- Add the animated logo here -->
+                <div class="flex justify-center mb-8">
+                    <img src="{{ asset('images/logo_animation.gif') }}" alt="Artisan Logo Animation" class="h-28 w-auto">
+                </div>
                 <h2 class="text-amber-700 font-bold tracking-widest uppercase text-sm mb-3">How It Works</h2>
                 <h3 class="text-3xl md:text-4xl font-heading font-bold text-stone-900">Your trusted service network</h3>
                 <div class="w-24 h-1 bg-amber-700 mx-auto mt-6 mb-6"></div>
