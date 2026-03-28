@@ -1,23 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/login', function () {
-    return redirect()->route('home');
-});
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register')->middleware('guest');
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::post('/register', function () {
-    return redirect()->route('home');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
