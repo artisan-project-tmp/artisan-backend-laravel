@@ -177,9 +177,7 @@
     <footer class="bg-stone-900 border-t border-stone-800 py-12 text-stone-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-amber-700 rounded flex items-center justify-center text-stone-50 font-heading font-bold text-sm">
-                    {{ substr(config('app.name', 'A'), 0, 1) }}
-                </div>
+                <img src="{{ asset('images/logo.png') }}" alt="Artisan Platform Logo" class="h-8 w-auto rounded shadow-sm">
                 <span class="font-heading font-bold text-xl text-stone-100">{{ config('app.name', 'ArtisanPlatform') }}</span>
             </div>
             <p class="text-xs uppercase tracking-widest font-bold">
