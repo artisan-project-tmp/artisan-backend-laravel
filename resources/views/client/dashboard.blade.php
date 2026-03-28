@@ -135,9 +135,10 @@
                     <!-- Rating Modal -->
                     <div id="rating-modal-{{$booking->id}}" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
                         <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-                        <div class="relative w-full max-w-sm mx-4 glass-card rounded-xl p-6 shadow-2xl z-10 text-center">
-                            <h3 class="font-heading text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">Rate {{ $booking->artisan->user->name }}</h3>
-                            <p class="text-xs text-stone-500 mb-6">Your review helps the community find trusted artisans.</p>
+                        <div class="relative w-full max-w-sm mx-4 glass-card rounded-2xl p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+                            <div class="w-12 h-12 mx-auto bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6">★</div>
+                            <h3 class="font-heading text-xl font-bold text-stone-900 dark:text-stone-100 mb-2 text-center">Rate {{ $booking->artisan->user->name }}</h3>
+                            <p class="text-xs text-stone-500 mb-6 text-center">Your review helps the community find trusted artisans.</p>
                             <form action="{{ route('booking.client.verify', $booking->id) }}" method="POST">
                                 @csrf
                                 <div class="mb-4">
@@ -157,8 +158,12 @@
                     </div>
                     @elseif($booking->status === 'completed')
                     <div class="w-full border border-stone-200 dark:border-stone-800 text-center text-emerald-600 dark:text-emerald-500 text-[10px] font-bold uppercase tracking-widest py-2 rounded bg-stone-50 dark:bg-stone-900/50">Done ({{ $booking->rating }} ★)</div>
-                    @else
-                    <div class="w-full border border-stone-200 dark:border-stone-800 text-center text-stone-500 dark:text-stone-400 text-[10px] font-bold uppercase tracking-widest py-2 rounded bg-stone-50 dark:bg-stone-900/50">Awaiting Update</div>
+                    @elseif($booking->status === 'canceled')
+                    <div class="bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 text-center text-[10px] font-bold uppercase tracking-widest py-2 rounded border border-red-200 dark:border-red-800/30">Canceled</div>
+                    @elseif($booking->status === 'rejected_by_artisan')
+                    <div class="bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 text-center text-[10px] font-bold uppercase tracking-widest py-2 rounded border border-red-200 dark:border-red-800/30">Declined by Artisan</div>
+                    @elseif($booking->status === 'rejected_by_client')
+                    <div class="bg-stone-50 dark:bg-stone-900/10 text-stone-500 dark:text-stone-500 text-center text-[10px] font-bold uppercase tracking-widest py-2 rounded border border-stone-200 dark:border-stone-800/30">Canceled by You</div>
                     @endif
                 </div>
                 @endforeach
@@ -247,7 +252,7 @@
 
                     <div class="flex gap-4 mt-6">
                         @php
-                            $hasActiveRequest = $clientBookings->where('artisan_id', $artisanUser->artisan->artisan_id)->whereNotIn('status', ['canceled', 'completed'])->isNotEmpty();
+                            $hasActiveRequest = $clientBookings->where('artisan_id', $artisanUser->artisan->artisan_id)->whereNotIn('status', ['canceled', 'completed', 'rejected_by_artisan', 'rejected_by_client', 'archived'])->isNotEmpty();
                         @endphp
                         
                         @if($hasActiveRequest)

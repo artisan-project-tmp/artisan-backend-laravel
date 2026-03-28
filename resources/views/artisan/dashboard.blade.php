@@ -71,6 +71,16 @@
 
     <!-- Main Content -->
     <main class="pt-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        @php
+            $pendingJobs = $user->artisan->bookings->where('status', 'pending');
+            $discussionJobs = $user->artisan->bookings->whereIn('status', ['in_discussion', 'artisan_approved', 'rejected_by_client']);
+            $bookedJobs = $user->artisan->bookings->whereIn('status', ['booked', 'artisan_completed']);
+            $newInquiriesCount = $pendingJobs->count();
+            
+            $completedWithRatings = $user->artisan->bookings->whereNotNull('rating');
+            $avgRating = $completedWithRatings->count() > 0 ? round($completedWithRatings->avg('rating'), 1) : 'New';
+            $reviewCount = $completedWithRatings->count();
+        @endphp
         
         <!-- Session Alerts -->
         @if (session('success'))
@@ -144,17 +154,12 @@
             <div class="glass-card rounded-lg p-6 border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors relative overflow-hidden group shadow-sm dark:shadow-none">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-600/20 transition-all"></div>
                 <div class="text-stone-500 dark:text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">New Inquiries</div>
-                <div class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100 mb-2">4</div>
+                <div class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100 mb-2">{{ $newInquiriesCount }}</div>
                 <div class="text-stone-500 text-xs">Awaiting your response</div>
             </div>
             <div class="glass-card rounded-lg p-6 border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors relative overflow-hidden group shadow-sm dark:shadow-none">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-600/20 transition-all"></div>
                 <div class="text-stone-500 dark:text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Client Rating</div>
-                @php
-                    $completedWithRatings = $user->artisan->bookings->whereNotNull('rating');
-                    $avgRating = $completedWithRatings->count() > 0 ? round($completedWithRatings->avg('rating'), 1) : 'New';
-                    $reviewCount = $completedWithRatings->count();
-                @endphp
                 <div class="font-heading text-4xl font-bold text-stone-900 dark:text-stone-100 mb-2 flex items-center gap-2">
                     {{ $avgRating }} @if($avgRating !== 'New')<span class="text-amber-500 text-2xl">★</span>@endif
                 </div>
@@ -163,16 +168,6 @@
         </div>
 
         <!-- Lead Pipeline (Kanban Lite) -->
-        @php
-            $pendingJobs = $user->artisan->bookings->where('status', 'pending');
-            $discussionJobs = $user->artisan->bookings->whereIn('status', ['in_discussion', 'artisan_approved']);
-            $bookedJobs = $user->artisan->bookings->whereIn('status', ['booked', 'artisan_completed']);
-            
-            // Re-calculate new inquiries for KPI card based on real data
-            $newInquiriesCount = $pendingJobs->count();
-            
-            // Re-calculate Rating KPI if we wanted, but not needed for this replacement.
-        @endphp
         <h3 class="text-xs font-bold tracking-widest text-stone-500 dark:text-stone-400 uppercase mb-6 flex items-center">
             <span class="w-4 h-[1px] bg-amber-600 mr-3"></span> Active Job Pipeline
         </h3>
@@ -200,7 +195,7 @@
                     <div class="flex gap-2">
                         <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST" class="flex-1">
                             @csrf
-                            <input type="hidden" name="status" value="canceled">
+                            <input type="hidden" name="status" value="rejected_by_artisan">
                             <button type="submit" class="w-full bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-500 dark:text-stone-400 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-sm">Decline</button>
                         </form>
                         <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST" class="flex-[2]">
@@ -225,9 +220,11 @@
                 </div>
                 
                 @forelse($discussionJobs as $job)
-                <div class="glass-card rounded-lg bg-white dark:bg-stone-900/90 shadow-sm dark:shadow-none p-4 mb-4 border-l-4 border-l-stone-500 transition-transform">
+                <div class="glass-card rounded-lg bg-white dark:bg-stone-900/90 shadow-sm dark:shadow-none p-4 mb-4 border-l-4 {{ $job->status === 'rejected_by_client' ? 'border-l-red-500 dark:border-l-red-600' : 'border-l-stone-500' }} transition-transform">
                     <div class="flex justify-between items-start mb-3">
-                        <span class="text-[10px] font-bold text-stone-600 dark:text-stone-400 uppercase tracking-widest px-2 py-1 bg-stone-100 dark:bg-stone-800 rounded border border-stone-200 dark:border-none">Active Chat</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border {{ $job->status === 'rejected_by_client' ? 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/30' : 'text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-none' }}">
+                            {{ $job->status === 'rejected_by_client' ? 'Client Declined' : 'Active Chat' }}
+                        </span>
                     </div>
                     <div class="flex items-center gap-2 mb-2">
                         <div class="w-5 h-5 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[8px] flex items-center justify-center font-bold text-stone-500">{{ substr($job->user->name, 0, 2) }}</div>
@@ -238,8 +235,25 @@
                     <div class="border-t border-stone-100 dark:border-stone-800 pt-3">
                         @if($job->status === 'artisan_approved')
                             <div class="w-full bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 text-center text-[10px] font-bold uppercase tracking-widest py-2 rounded border border-stone-200 dark:border-stone-700 shadow-inner">Waiting for Client</div>
+                        @elseif($job->status === 'rejected_by_client')
+                            <div class="text-[10px] text-red-600 dark:text-red-400 mb-3 bg-red-50 dark:bg-red-900/10 p-2 rounded">Client declined your price: ${{ number_format($job->price, 2) }}</div>
+                            <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="archived">
+                                <button type="submit" class="w-full bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-none tracking-widest">OK (Archive)</button>
+                            </form>
                         @else
-                            <button type="button" onclick="document.getElementById('terms-modal-{{$job->id}}').classList.remove('hidden')" class="w-full bg-stone-800 hover:bg-stone-900 dark:bg-stone-200 dark:hover:bg-white text-stone-50 dark:text-stone-900 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-sm">Send Final Terms</button>
+                            <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST" class="space-y-3">
+                                @csrf
+                                <input type="hidden" name="status" value="artisan_approved">
+                                <div>
+                                    <input type="number" name="price" step="0.01" min="0" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded px-2 py-1.5 text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" placeholder="Total Price ($)" required>
+                                </div>
+                                <div>
+                                    <textarea name="final_terms" rows="2" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded px-2 py-1.5 text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" placeholder="Final details & timeline..." required></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-stone-800 hover:bg-stone-900 dark:bg-stone-200 dark:hover:bg-white text-stone-50 dark:text-stone-900 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-sm">Send Final Terms</button>
+                            </form>
                         @endif
                     </div>
                 </div>
@@ -371,37 +385,6 @@
         </div>
     </div>
     @endif
-
-    <!-- Final Terms Negotiator Modals -->
-    @foreach($user->artisan->bookings as $job)
-    @if(in_array($job->status, ['in_discussion']))
-    <div id="terms-modal-{{$job->id}}" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
-        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-        <div class="relative w-full max-w-md mx-4 glass-card rounded-2xl p-8 shadow-2xl z-10">
-            <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">Propose Final Deal</h3>
-            <p class="text-sm text-stone-500 mb-6">Set your final price and terms for {{ $job->user->name }}. They will receive these to review before they officially hire you.</p>
-            
-            <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST">
-                @csrf
-                <input type="hidden" name="status" value="artisan_approved">
-                
-                <div class="mb-5">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Total Price ($)</label>
-                    <input type="number" name="price" step="0.01" min="0" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" placeholder="e.g. 450.00" required>
-                </div>
-                <div class="mb-8">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Final Details & Timeline</label>
-                    <textarea name="final_terms" rows="4" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" placeholder="Includes materials. Start date: Nov 12th. Timeline: 2 weeks..." required></textarea>
-                </div>
-                <div class="flex gap-4">
-                    <button type="button" onclick="document.getElementById('terms-modal-{{$job->id}}').classList.add('hidden')" class="flex-1 px-4 py-3 bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold uppercase tracking-widest rounded transition-colors shadow-none">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-3 bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest rounded transition-colors shadow-sm">Send Terms</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endif
-    @endforeach
     
     <script>
         // Setup Icon Display

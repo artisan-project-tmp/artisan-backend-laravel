@@ -26,7 +26,7 @@ class BookingController extends Controller
         // Anti-spam check: Does the client already have an active booking with this artisan?
         $existingJob = Booking::where('user_id', Auth::id())
             ->where('artisan_id', $artisanId)
-            ->whereNotIn('status', ['canceled', 'completed'])
+            ->whereNotIn('status', ['canceled', 'completed', 'rejected_by_artisan', 'rejected_by_client', 'archived'])
             ->first();
 
         if ($existingJob) {
@@ -54,7 +54,7 @@ class BookingController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:in_discussion,artisan_approved,artisan_completed,canceled',
+            'status' => 'required|in:in_discussion,artisan_approved,artisan_completed,canceled,rejected_by_artisan,archived',
             'price' => 'nullable|required_if:status,artisan_approved|numeric|min:0',
             'final_terms' => 'nullable|required_if:status,artisan_approved|string|max:1500',
         ]);
@@ -67,8 +67,12 @@ class BookingController extends Controller
         $booking->status = $request->status;
         $booking->save();
 
-        if ($request->status === 'canceled') {
+        if ($request->status === 'rejected_by_artisan') {
             return back()->with('success', 'You have successfully declined this request.');
+        }
+
+        if ($request->status === 'archived') {
+            return back()->with('success', 'Rejection has been archived.');
         }
 
         return back()->with('success', 'Job pipeline updated successfully.');
@@ -104,7 +108,7 @@ class BookingController extends Controller
             return back()->withErrors(['You cannot decline this job at this stage.']);
         }
 
-        $booking->status = 'canceled';
+        $booking->status = 'rejected_by_client';
         $booking->save();
 
         return back()->with('success', 'You have declined the artisan\'s terms. The job is canceled.');
