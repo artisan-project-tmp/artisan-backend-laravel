@@ -9,7 +9,7 @@ use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -20,9 +20,17 @@ class DashboardController extends Controller
 
         // If client, fetch categories and featured artisans for the discovery feed
         $categories = Category::all();
-        $artisans = User::where('role', 'artisan')
-            ->with(['artisan', 'artisan.portfolioImages'])
-            ->get()
+        
+        $query = User::where('role', 'artisan')
+            ->with(['artisan', 'artisan.portfolioImages']);
+            
+        if ($request->has('category')) {
+            $query->whereHas('artisan', function($q) use ($request) {
+                $q->where('craft_type', $request->category);
+            });
+        }
+            
+        $artisans = $query->get()
             ->sortByDesc(function ($userParam) {
                 return $userParam->artisan->is_available ?? false;
             });
@@ -33,5 +41,17 @@ class DashboardController extends Controller
             ->get();
         
         return view('client.dashboard', compact('user', 'categories', 'artisans', 'clientBookings'));
+    }
+
+    public function viewArtisanProfile($id)
+    {
+        $user = Auth::user();
+        $artisanUser = User::where('role', 'artisan')->with(['artisan', 'artisan.portfolioImages'])->findOrFail($id);
+        
+        if ($artisanUser->artisan) {
+            $artisanUser->artisan->increment('profile_views');
+        }
+
+        return view('client.profile', compact('user', 'artisanUser'));
     }
 }

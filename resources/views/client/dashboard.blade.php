@@ -91,9 +91,9 @@
 
         <!-- Dynamic Category Pills -->
         <div class="flex flex-wrap justify-center gap-3 mb-16">
-            <button class="px-6 py-2 rounded-full border border-amber-700/50 dark:border-amber-600/50 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-500 text-xs font-bold tracking-widest uppercase hover:bg-amber-200 dark:hover:bg-amber-900/40 transition-colors shadow-sm dark:shadow-[0_0_10px_rgba(217,119,6,0.2)]">All</button>
+            <a href="{{ route('dashboard') }}" class="px-6 py-2 rounded-full border {{ !request('category') ? 'border-amber-700/50 dark:border-amber-600/50 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-500 shadow-sm dark:shadow-[0_0_10px_rgba(217,119,6,0.2)]' : 'border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-900/50 text-stone-600 dark:text-stone-400 hover:border-amber-700/50 dark:hover:border-amber-600/30 shadow-none' }} text-xs font-bold tracking-widest uppercase transition-colors">All</a>
             @foreach($categories as $category)
-            <button class="px-6 py-2 rounded-full border border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-900/50 text-stone-600 dark:text-stone-400 text-xs font-bold tracking-widest uppercase hover:border-amber-700/50 dark:hover:border-amber-600/30 hover:text-stone-900 dark:hover:text-stone-200 transition-colors shadow-sm dark:shadow-none">{{ $category->name }}</button>
+            <a href="{{ route('dashboard', ['category' => $category->name]) }}" class="px-6 py-2 rounded-full border {{ request('category') == $category->name ? 'border-amber-700/50 dark:border-amber-600/50 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-500 shadow-sm dark:shadow-[0_0_10px_rgba(217,119,6,0.2)]' : 'border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-900/50 text-stone-600 dark:text-stone-400 hover:border-amber-700/50 dark:hover:border-amber-600/30 hover:text-stone-900 dark:hover:text-stone-200 shadow-sm dark:shadow-none' }} text-xs font-bold tracking-widest uppercase transition-colors">{{ $category->name }}</a>
             @endforeach
         </div>
 
@@ -243,9 +243,9 @@
                             Unavailable
                         </button>
                         @endif
-                        <button class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-transparent dark:hover:bg-transparent border border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-600/50 text-stone-800 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-500 text-xs font-bold tracking-widest uppercase py-3 px-2 rounded transition-colors text-center">
+                        <a href="{{ route('client.artisan.profile', $artisanUser->id) }}" class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-transparent dark:hover:bg-transparent border border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-600/50 text-stone-800 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-500 text-xs font-bold tracking-widest uppercase py-3 px-2 rounded transition-colors text-center inline-block">
                             View Work
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -147,8 +147,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div class="glass-card rounded-lg p-6 border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors relative overflow-hidden group shadow-sm dark:shadow-none">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-600/20 transition-all"></div>
-                <div class="text-stone-500 dark:text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Profile Views (7d)</div>
-                <div class="font-heading text-4xl font-bold text-amber-700 dark:text-amber-500 dark:glow-amber-text mb-2">1,248</div>
+                <div class="text-stone-500 dark:text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Profile Views (Total)</div>
+                <div class="font-heading text-4xl font-bold text-amber-700 dark:text-amber-500 dark:glow-amber-text mb-2">{{ number_format($user->artisan->profile_views) }}</div>
                 <div class="text-emerald-600 dark:text-emerald-500 text-xs font-bold">+14.5% vs last week</div>
             </div>
             <div class="glass-card rounded-lg p-6 border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors relative overflow-hidden group shadow-sm dark:shadow-none">
