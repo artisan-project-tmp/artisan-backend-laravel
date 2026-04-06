@@ -131,31 +131,6 @@
                     </div>
                     @elseif($booking->status === 'artisan_completed')
                     <button onclick="document.getElementById('rating-modal-{{$booking->id}}').classList.remove('hidden')" class="w-full bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-sm">Verify Work</button>
-                    
-                    <!-- Rating Modal -->
-                    <div id="rating-modal-{{$booking->id}}" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
-                        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-                        <div class="relative w-full max-w-sm mx-4 glass-card rounded-2xl p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
-                            <div class="w-12 h-12 mx-auto bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6">★</div>
-                            <h3 class="font-heading text-xl font-bold text-stone-900 dark:text-stone-100 mb-2 text-center">Rate {{ $booking->artisan->user->name }}</h3>
-                            <p class="text-xs text-stone-500 mb-6 text-center">Your review helps the community find trusted artisans.</p>
-                            <form action="{{ route('booking.client.verify', $booking->id) }}" method="POST">
-                                @csrf
-                                <div class="mb-4">
-                                    <label class="block text-xs font-bold text-left uppercase text-stone-600 dark:text-stone-400 mb-2">Rating (1-5)</label>
-                                    <input type="number" name="rating" min="1" max="5" value="5" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm focus:outline-none focus:border-amber-500 transition-colors">
-                                </div>
-                                <div class="mb-6">
-                                    <label class="block text-xs font-bold text-left uppercase text-stone-600 dark:text-stone-400 mb-2">Review (Optional)</label>
-                                    <textarea name="review" rows="3" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm focus:outline-none focus:border-amber-500 transition-colors"></textarea>
-                                </div>
-                                <div class="flex gap-3">
-                                    <button type="button" onclick="document.getElementById('rating-modal-{{$booking->id}}').classList.add('hidden')" class="flex-1 bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-bold uppercase tracking-widest py-3 rounded">Cancel</button>
-                                    <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold uppercase tracking-widest py-3 rounded shadow-sm">Submit Review</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     @elseif($booking->status === 'completed')
                     <div class="w-full border border-stone-200 dark:border-stone-800 text-center text-emerald-600 dark:text-emerald-500 text-[10px] font-bold uppercase tracking-widest py-2 rounded bg-stone-50 dark:bg-stone-900/50">Done ({{ $booking->rating }} ★)</div>
                     @elseif($booking->status === 'canceled')
@@ -277,6 +252,37 @@
             @endforeach
         </div>
     </main>
+
+    <!-- Rating Modals -->
+    @if(isset($clientBookings))
+        @foreach($clientBookings as $booking)
+            @if($booking->status === 'artisan_completed')
+            <div id="rating-modal-{{$booking->id}}" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+                <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
+                <div class="relative w-full max-w-sm mx-4 glass-card rounded-2xl p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+                    <div class="w-12 h-12 mx-auto bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6">★</div>
+                    <h3 class="font-heading text-xl font-bold text-stone-900 dark:text-stone-100 mb-2 text-center">Rate {{ $booking->artisan->user->name }}</h3>
+                    <p class="text-xs text-stone-500 mb-6 text-center">Your review helps the community find trusted artisans.</p>
+                    <form action="{{ route('booking.client.verify', $booking->id) }}" method="POST">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-left uppercase text-stone-600 dark:text-stone-400 mb-2">Rating (1-5)</label>
+                            <input type="number" name="rating" min="1" max="5" value="5" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-left uppercase text-stone-600 dark:text-stone-400 mb-2">Review (Optional)</label>
+                            <textarea name="review" rows="3" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-3 text-sm focus:outline-none focus:border-amber-500 transition-colors"></textarea>
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="document.getElementById('rating-modal-{{$booking->id}}').classList.add('hidden')" class="flex-1 bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-bold uppercase tracking-widest py-3 rounded">Cancel</button>
+                            <button type="submit" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold uppercase tracking-widest py-3 rounded shadow-sm">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @endif
+        @endforeach
+    @endif
 
     <!-- Quote Modals -->
     @foreach($artisans as $artisanUser)
