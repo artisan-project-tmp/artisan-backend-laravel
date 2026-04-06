@@ -63,7 +63,7 @@
                 <div class="flex items-center space-x-4">
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="px-6 py-2.5 text-sm font-bold tracking-wider text-stone-50 bg-amber-700 hover:bg-amber-800 rounded shadow-sm transition-all uppercase">Dashboard</a>
+                            class="px-6 py-2.5 text-sm font-bold tracking-wider text-stone-50 bg-amber-700 hover:bg-amber-800 rounded shadow-sm transition-all uppercase">Welcome, {{ explode(' ', auth()->user()->name)[0] }} (Dashboard)</a>
                     @else
                         <a href="{{ route('login') }}"
                             class="text-sm font-bold tracking-wider text-stone-600 hover:text-amber-700 transition uppercase">Sign
