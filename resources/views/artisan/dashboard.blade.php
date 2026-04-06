@@ -149,7 +149,6 @@
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-600/20 transition-all"></div>
                 <div class="text-stone-500 dark:text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Profile Views (Total)</div>
                 <div class="font-heading text-4xl font-bold text-amber-700 dark:text-amber-500 dark:glow-amber-text mb-2">{{ number_format($user->artisan->profile_views) }}</div>
-                <div class="text-emerald-600 dark:text-emerald-500 text-xs font-bold">+14.5% vs last week</div>
             </div>
             <div class="glass-card rounded-lg p-6 border border-stone-200 dark:border-stone-800 hover:border-amber-400 dark:hover:border-amber-700/50 transition-colors relative overflow-hidden group shadow-sm dark:shadow-none">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 dark:bg-amber-600/10 rounded-full blur-xl group-hover:bg-amber-500/20 dark:group-hover:bg-amber-600/20 transition-all"></div>
@@ -317,10 +316,10 @@
                         <form action="{{ route('artisan.portfolio.delete', $image->id) }}" method="POST" class="flex flex-col items-center">
                             @csrf
                             @method('DELETE')
-                            <button type="button" onclick="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" class="text-white hover:text-red-400 transition-colors p-2" title="Delete image">
+                            <button type="button" onclick="event.stopPropagation(); resetDeleteButtons(); this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" class="text-white hover:text-red-400 transition-colors p-2 delete-trigger-btn" title="Delete image">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
-                            <button type="submit" class="hidden text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-1 mt-1 rounded text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                            <button type="submit" onclick="event.stopPropagation();" class="hidden text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-1 mt-1 rounded text-[10px] font-bold uppercase tracking-widest shadow-lg delete-confirm-btn">
                                 Sure?
                             </button>
                         </form>
@@ -425,6 +424,14 @@
             document.getElementById('close-availability').addEventListener('click', () => availabilityModal.classList.add('hidden'));
             document.getElementById('availability-backdrop').addEventListener('click', () => availabilityModal.classList.add('hidden'));
         }
+        // Delete button logic
+        function resetDeleteButtons() {
+            document.querySelectorAll('.delete-trigger-btn').forEach(btn => btn.classList.remove('hidden'));
+            document.querySelectorAll('.delete-confirm-btn').forEach(btn => btn.classList.add('hidden'));
+        }
+        document.addEventListener('click', function(e) {
+            resetDeleteButtons();
+        });
     </script>
 </body>
 </html>

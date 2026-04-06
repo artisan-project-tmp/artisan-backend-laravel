@@ -75,7 +75,17 @@
                                 <div class="text-[10px] uppercase font-bold tracking-widest text-stone-500">Reviews</div>
                             </div>
                         </div>
-                        @if($artisanUser->artisan->is_available)
+                        @php
+                            $hasActiveRequest = false;
+                            if (auth()->check() && $artisanUser->artisan->bookings) {
+                                $hasActiveRequest = $artisanUser->artisan->bookings->where('user_id', auth()->id())->whereNotIn('status', ['canceled', 'completed', 'rejected_by_artisan', 'rejected_by_client', 'archived'])->isNotEmpty();
+                            }
+                        @endphp
+                        @if($hasActiveRequest)
+                            <button class="w-full bg-stone-300 dark:bg-stone-800 text-stone-500 dark:text-stone-500 text-xs font-bold tracking-widest uppercase py-4 rounded cursor-not-allowed text-center block" disabled>
+                                Request Pending
+                            </button>
+                        @elseif($artisanUser->artisan->is_available)
                             <button onclick="document.getElementById('quote-modal').classList.remove('hidden')" class="w-full bg-amber-700 hover:bg-amber-800 dark:bg-amber-700 dark:hover:bg-amber-600 text-white dark:text-stone-950 text-xs font-bold tracking-widest uppercase py-4 rounded transition-colors shadow-sm dark:shadow-[0_0_15px_rgba(217,119,6,0.2)] dark:hover:shadow-[0_0_20px_rgba(217,119,6,0.4)] text-center block">
                                 Request Quote
                             </button>
