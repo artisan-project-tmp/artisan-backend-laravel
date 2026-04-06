@@ -58,6 +58,10 @@ class ArtisanController extends Controller
 
         $artisan = Artisan::where('artisan_id', Auth::id())->firstOrFail();
 
+        if ($artisan->portfolioImages()->count() >= 5) {
+            return redirect()->back()->with('error', 'You can only upload a maximum of 5 portfolio images.');
+        }
+
         if ($request->hasFile('portfolio_image')) {
             $path = $request->file('portfolio_image')->store('portfolios', 'public');
             

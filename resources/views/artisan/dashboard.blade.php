@@ -314,11 +314,14 @@
                 <div class="relative group aspect-square rounded-lg overflow-hidden border border-stone-200 dark:border-stone-800">
                     <img src="{{ asset('storage/' . $image->image_path) }}" alt="Portfolio piece" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <form action="{{ route('artisan.portfolio.delete', $image->id) }}" method="POST">
+                        <form action="{{ route('artisan.portfolio.delete', $image->id) }}" method="POST" class="flex flex-col items-center">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-white hover:text-red-400 transition-colors p-2" title="Delete image">
+                            <button type="button" onclick="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" class="text-white hover:text-red-400 transition-colors p-2" title="Delete image">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                            <button type="submit" class="hidden text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-1 mt-1 rounded text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                                Sure?
                             </button>
                         </form>
                     </div>
@@ -326,6 +329,7 @@
                 @endforeach
 
                 <!-- Upload Form Zone -->
+                @if($user->artisan->portfolioImages->count() < 5)
                 <form action="{{ route('artisan.portfolio.upload') }}" method="POST" enctype="multipart/form-data" class="aspect-square glass-card rounded-lg flex flex-col items-center justify-center text-center hover:border-amber-500 hover:bg-stone-50 dark:hover:bg-stone-900/50 transition-colors cursor-pointer group border-dashed border-2 relative">
                     @csrf
                     <input type="file" name="portfolio_image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="this.form.submit()">
@@ -333,8 +337,9 @@
                         <svg class="w-6 h-6 text-stone-400 group-hover:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
                     </div>
                     <h4 class="font-heading text-lg font-bold text-stone-900 dark:text-stone-200">Add Photo</h4>
-                    <p class="text-stone-500 text-[10px] uppercase font-bold tracking-widest mt-1">Max 5MB</p>
+                    <p class="text-stone-500 text-[10px] uppercase font-bold tracking-widest mt-1">5 Max (5MB)</p>
                 </form>
+                @endif
             </div>
         </div>
 
