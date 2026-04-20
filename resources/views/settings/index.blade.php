@@ -52,22 +52,7 @@
     </nav>
 
     <main class="max-w-4xl mx-auto px-6 lg:px-8">
-        @if (session('success'))
-            <div class="bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-400 dark:border-emerald-800 text-emerald-800 dark:text-emerald-400 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
 
-        @if ($errors->any())
-            <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-800 dark:text-red-400 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
-                <strong class="font-bold">Error!</strong>
-                <ul class="list-disc pl-5 mt-2">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <header class="mb-12 mt-8 md:mt-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <div>
@@ -86,6 +71,23 @@
             @endif
         </header>
 
+        @if (session('success'))
+            <div class="bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-400 dark:border-emerald-800 text-emerald-800 dark:text-emerald-400 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-800 dark:text-red-400 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <ul class="list-disc pl-5 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             
             <div class="md:col-span-2 space-y-8">
@@ -97,15 +99,23 @@
                         @csrf
                         
                         <div class="flex items-center gap-6 mb-6">
-                            @if($user->profile_pic)
-                                <img src="{{ asset('storage/' . $user->profile_pic) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border border-stone-200 dark:border-stone-700">
-                            @else
-                                <div class="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-2xl flex items-center justify-center font-bold text-stone-500">{{ substr($user->name, 0, 2) }}</div>
-                            @endif
+                            <label for="profile_pic_upload" class="cursor-pointer relative group block">
+                                @if($user->profile_pic)
+                                    <img src="{{ asset('storage/' . $user->profile_pic) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border border-stone-200 dark:border-stone-700 group-hover:opacity-50 transition-opacity">
+                                @else
+                                    <div class="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-2xl flex items-center justify-center font-bold text-stone-500 group-hover:opacity-50 transition-opacity">{{ substr($user->name, 0, 2) }}</div>
+                                @endif
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined text-stone-900 dark:text-stone-100 drop-shadow-md">upload</span>
+                                </div>
+                            </label>
                             
                             <div>
                                 <label class="block text-xs uppercase font-bold text-stone-600 dark:text-stone-400 mb-2">Change Picture (Max 1MB)</label>
-                                <input type="file" name="profile_pic" accept="image/jpeg,image/png,image/jpg" class="text-sm text-stone-500 dark:text-stone-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-stone-200 file:text-stone-700 dark:file:bg-stone-800 dark:file:text-stone-300 hover:file:bg-stone-300 dark:hover:file:bg-stone-700 transition-colors">
+                                <input type="file" id="profile_pic_upload" name="profile_pic" accept="image/jpeg,image/png,image/jpg" class="hidden">
+                                <label for="profile_pic_upload" class="cursor-pointer inline-block bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700 py-2 px-4 rounded text-xs font-bold uppercase tracking-widest transition-colors">
+                                    Browse...
+                                </label>
                             </div>
                         </div>
 
