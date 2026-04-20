@@ -182,29 +182,30 @@
                 </div>
                 
                 @forelse($pendingJobs as $job)
-                <div class="glass-card rounded-lg bg-white dark:bg-stone-900/90 shadow-sm dark:shadow-none p-4 mb-4 border-l-4 border-l-amber-500 dark:border-l-amber-600 transition-transform">
+                <a href="{{ route('booking.artisan.show', $job->id) }}" class="block glass-card rounded-lg bg-white dark:bg-stone-900/90 shadow-sm dark:shadow-none p-4 mb-4 border-l-4 border-l-amber-500 dark:border-l-amber-600 transition-transform hover:-translate-y-1 hover:shadow-md cursor-pointer group">
                     <div class="flex justify-between items-start mb-3">
                         <span class="text-[10px] font-bold text-amber-700 dark:text-amber-500 uppercase tracking-widest px-2 py-1 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-100 dark:border-none">Quote Request</span>
                         <span class="text-[10px] text-stone-400 dark:text-stone-500 uppercase font-bold tracking-wider">{{ \Carbon\Carbon::parse($job->created_at)->diffForHumans() }}</span>
                     </div>
                     <div class="flex items-center gap-2 mb-3 border-b border-stone-100 dark:border-stone-800 pb-3">
                         <div class="w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[9px] flex items-center justify-center font-bold text-amber-700 dark:text-amber-500">{{ substr($job->user->name, 0, 2) }}</div>
-                        <span class="text-xs font-bold text-stone-900 dark:text-stone-100">{{ $job->user->name }}</span>
+                        <span class="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-500 transition-colors">{{ $job->user->name }}</span>
                     </div>
-                    <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-3 mb-4 leading-relaxed">"{{ $job->description }}"</p>
-                    <div class="flex gap-2">
-                        <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST" class="flex-1">
-                            @csrf
-                            <input type="hidden" name="status" value="rejected_by_artisan">
-                            <button type="submit" class="w-full bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-500 dark:text-stone-400 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors shadow-sm">Decline</button>
-                        </form>
-                        <form action="{{ route('booking.artisan.status', $job->id) }}" method="POST" class="flex-[2]">
-                            @csrf
-                            <input type="hidden" name="status" value="in_discussion">
-                            <button type="submit" class="w-full bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/30 dark:hover:bg-amber-800/50 text-amber-800 dark:text-amber-500 text-[10px] font-bold uppercase tracking-widest py-2 rounded transition-colors border border-amber-200 dark:border-amber-800/50 shadow-sm">Chat / Negotiate</button>
-                        </form>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $job->title ?? 'Custom Request' }}</h4>
+                        <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $job->reference_id }}</span>
                     </div>
-                </div>
+                    @if($job->budget_range || $job->location)
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            @if($job->budget_range) <span class="bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-[9px] px-1.5 py-0.5 rounded">{{ $job->budget_range }}</span> @endif
+                            @if($job->location) <span class="bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-[9px] px-1.5 py-0.5 rounded">{{ $job->location }}</span> @endif
+                        </div>
+                    @endif
+                    <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-3 mb-2 leading-relaxed">"{{ $job->description }}"</p>
+                    <div class="text-[10px] font-bold text-amber-600 dark:text-amber-500 mt-3 flex items-center gap-1 group-hover:gap-2 transition-all">
+                        View Full Details <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </div>
+                </a>
                 @empty
                 <div class="h-32 flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 border border-stone-300 dark:border-stone-800/50 rounded-lg border-dashed mt-4 bg-stone-50/50 dark:bg-transparent">
                     <span class="text-xs uppercase tracking-widest font-bold">No new leads</span>
@@ -229,6 +230,10 @@
                     <div class="flex items-center gap-2 mb-2">
                         <div class="w-5 h-5 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[8px] flex items-center justify-center font-bold text-stone-500">{{ substr($job->user->name, 0, 2) }}</div>
                         <span class="text-xs font-bold text-stone-900 dark:text-stone-100">{{ $job->user->name }}</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $job->title ?? 'Custom Request' }}</h4>
+                        <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $job->reference_id }}</span>
                     </div>
                     <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-1 mb-4 italic">"{{ $job->description }}"</p>
                     
@@ -320,6 +325,10 @@
                 <div class="flex items-center gap-2 mb-3 border-b border-stone-100 dark:border-stone-800 pb-3">
                     <div class="w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-[9px] flex items-center justify-center font-bold text-stone-500">{{ substr($job->user->name, 0, 2) }}</div>
                     <span class="text-xs font-bold text-stone-900 dark:text-stone-100">{{ $job->user->name }}</span>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $job->title ?? 'Custom Request' }}</h4>
+                    <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $job->reference_id }}</span>
                 </div>
                 <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mb-2 leading-relaxed">"{{ $job->description }}"</p>
                 

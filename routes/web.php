@@ -28,7 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/artisan/portfolio/{id}', [ArtisanController::class, 'deletePortfolioImage'])->name('artisan.portfolio.delete');
 
     // Dual-Approval Booking System
+    Route::get('/client/artisan/{id}/request-quote', [App\Http\Controllers\BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking/{artisanId}', [App\Http\Controllers\BookingController::class, 'store'])->name('booking.store');
+    Route::get('/artisan/booking/{booking}', [App\Http\Controllers\BookingController::class, 'show'])->name('booking.artisan.show');
     Route::post('/artisan/booking/{booking}/status', [App\Http\Controllers\BookingController::class, 'artisanStatusUpdate'])->name('booking.artisan.status');
     Route::post('/client/booking/{booking}/approve', [App\Http\Controllers\BookingController::class, 'clientApprove'])->name('booking.client.approve');
     Route::post('/client/booking/{booking}/decline', [App\Http\Controllers\BookingController::class, 'clientDecline'])->name('booking.client.decline');

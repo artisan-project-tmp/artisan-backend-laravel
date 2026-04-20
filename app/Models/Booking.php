@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $fillable = [
+        'reference_id',
         'user_id',
         'artisan_id',
+        'title',
         'description',
+        'budget_range',
+        'location',
         'image_path',
+        'reference_images',
         'status',
         'scheduled_date',
         'rating',
@@ -21,7 +26,17 @@ class Booking extends Model
 
     protected $casts = [
         'scheduled_date' => 'datetime',
+        'reference_images' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($booking) {
+            if (empty($booking->reference_id)) {
+                $booking->reference_id = '#BKL-' . strtoupper(\Illuminate\Support\Str::random(6));
+            }
+        });
+    }
 
     public function user()
     {

@@ -116,7 +116,17 @@
                         <span class="text-[10px] font-bold text-amber-700 dark:text-amber-500 uppercase tracking-widest px-2 py-1 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-100 dark:border-none">{{ str_replace('_', ' ', $booking->status) }}</span>
                         <span class="text-[10px] text-stone-400 dark:text-stone-500 uppercase font-bold tracking-wider">{{ \Carbon\Carbon::parse($booking->scheduled_date)->format('M d') }}</span>
                     </div>
-                    <h4 class="font-bold text-stone-900 dark:text-stone-100 mb-2 truncate">with {{ $booking->artisan->user->name }}</h4>
+                    <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $booking->title ?? 'Custom Request' }}</h4>
+                        <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $booking->reference_id }}</span>
+                    </div>
+                    <div class="text-[10px] text-stone-500 dark:text-stone-400 mb-2 uppercase tracking-widest font-bold">with {{ $booking->artisan->user->name }}</div>
+                    @if($booking->budget_range || $booking->location)
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            @if($booking->budget_range) <span class="bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-[9px] px-1.5 py-0.5 rounded">{{ $booking->budget_range }}</span> @endif
+                            @if($booking->location) <span class="bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-[9px] px-1.5 py-0.5 rounded">{{ $booking->location }}</span> @endif
+                        </div>
+                    @endif
                     <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">{{ $booking->description }}</p>
                     
                     @if($booking->status === 'artisan_approved')
@@ -157,7 +167,11 @@
                         <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest px-2 py-1 bg-emerald-50 dark:bg-emerald-900/20 rounded border border-emerald-100 dark:border-emerald-800/30">Completed</span>
                         <span class="text-[10px] text-stone-400 dark:text-stone-500 uppercase font-bold tracking-wider">{{ \Carbon\Carbon::parse($booking->updated_at)->format('M d') }}</span>
                     </div>
-                    <h4 class="font-bold text-stone-900 dark:text-stone-100 mb-2 truncate">with {{ $booking->artisan->user->name }}</h4>
+                    <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $booking->title ?? 'Custom Request' }}</h4>
+                        <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $booking->reference_id }}</span>
+                    </div>
+                    <div class="text-[10px] text-stone-500 dark:text-stone-400 mb-2 uppercase tracking-widest font-bold">with {{ $booking->artisan->user->name }}</div>
                     <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">{{ $booking->description }}</p>
                     
                     <div class="w-full border border-emerald-200 dark:border-emerald-800/50 text-center text-emerald-600 dark:text-emerald-500 text-[10px] font-bold uppercase tracking-widest py-2 rounded bg-emerald-50/50 dark:bg-emerald-900/10">Done ({{ $booking->rating }} ★)</div>
@@ -180,7 +194,11 @@
                         <span class="text-[10px] font-bold text-red-700 dark:text-red-400 uppercase tracking-widest px-2 py-1 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800/30">Declined / Canceled</span>
                         <span class="text-[10px] text-stone-400 dark:text-stone-500 uppercase font-bold tracking-wider">{{ \Carbon\Carbon::parse($booking->updated_at)->format('M d') }}</span>
                     </div>
-                    <h4 class="font-bold text-stone-900 dark:text-stone-100 mb-2 truncate">with {{ $booking->artisan->user->name }}</h4>
+                    <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 truncate">{{ $booking->title ?? 'Custom Request' }}</h4>
+                        <span class="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500">{{ $booking->reference_id }}</span>
+                    </div>
+                    <div class="text-[10px] text-stone-500 dark:text-stone-400 mb-2 uppercase tracking-widest font-bold">with {{ $booking->artisan->user->name }}</div>
                     <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">{{ $booking->description }}</p>
                     
                     @if($booking->status === 'canceled')
@@ -285,9 +303,9 @@
                             Request Pending
                         </button>
                         @elseif($artisanUser->artisan->is_available)
-                        <button onclick="document.getElementById('quote-modal-{{$artisanUser->id}}').classList.remove('hidden')" class="flex-1 bg-amber-700 hover:bg-amber-800 dark:bg-amber-700 dark:hover:bg-amber-600 text-white dark:text-stone-950 text-xs font-bold tracking-widest uppercase py-3 px-2 rounded transition-colors shadow-sm dark:shadow-[0_0_15px_rgba(217,119,6,0.2)] dark:hover:shadow-[0_0_20px_rgba(217,119,6,0.4)] text-center">
+                        <a href="{{ route('booking.create', $artisanUser->id) }}" class="flex flex-1 items-center justify-center bg-amber-700 hover:bg-amber-800 dark:bg-amber-700 dark:hover:bg-amber-600 text-white dark:text-stone-950 text-xs font-bold tracking-widest uppercase py-3 px-2 rounded transition-colors shadow-sm dark:shadow-[0_0_15px_rgba(217,119,6,0.2)] dark:hover:shadow-[0_0_20px_rgba(217,119,6,0.4)] text-center">
                             Request Quote
-                        </button>
+                        </a>
                         @else
                         <button class="flex-1 bg-stone-300 dark:bg-stone-800 text-stone-500 dark:text-stone-500 text-xs font-bold tracking-widest uppercase py-3 px-2 rounded cursor-not-allowed text-center">
                             Unavailable
@@ -334,34 +352,7 @@
         @endforeach
     @endif
 
-    <!-- Quote Modals -->
-    @foreach($artisans as $artisanUser)
-    @if($artisanUser->artisan->is_available)
-    <div id="quote-modal-{{$artisanUser->id}}" class="fixed inset-0 z-[100] hidden items-center justify-center flex">
-        <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-        <div class="relative w-full max-w-lg mx-4 glass-card rounded-2xl p-8 shadow-2xl z-10">
-            <h3 class="font-heading text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">Request Quote from {{ $artisanUser->name }}</h3>
-            <p class="text-sm text-stone-500 mb-6">Describe your project requirements and preferred timeline.</p>
-            
-            <form action="{{ route('booking.store', $artisanUser->id) }}" method="POST">
-                @csrf
-                <div class="mb-5">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Project Description</label>
-                    <textarea name="description" rows="4" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" placeholder="I need a custom oak dining table..." required></textarea>
-                </div>
-                <div class="mb-8">
-                    <label class="block text-xs font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 mb-2">Desired Timeline (Date)</label>
-                    <input type="date" name="scheduled_date" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded p-4 text-sm text-stone-800 dark:text-stone-200 focus:outline-none focus:border-amber-500 transition-colors" required>
-                </div>
-                <div class="flex gap-4">
-                    <button type="button" onclick="document.getElementById('quote-modal-{{$artisanUser->id}}').classList.add('hidden')" class="flex-1 px-4 py-3 bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold uppercase tracking-widest rounded transition-colors">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-3 bg-amber-700 hover:bg-amber-800 text-stone-50 text-xs font-bold uppercase tracking-widest rounded transition-colors shadow-sm">Send Request</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endif
-    @endforeach
+
 
     <script>
         // Setup Icon Display
